@@ -107,7 +107,6 @@ def cv_train(name, n_features=20, model_choice='lr', estimators_number=30, apply
 
         return cv_scores
 
-
 def train(name, n_features=20, model_choice='lr', estimators_number=30, apply_SMOTE=True):
     import warnings
 
@@ -125,13 +124,11 @@ def train(name, n_features=20, model_choice='lr', estimators_number=30, apply_SM
         roc_auc_score,
         recall_score,
     )
-    from sklearn.model_selection import (train_test_split)
+    from sklearn.model_selection import train_test_split
     from sklearn.linear_model import LogisticRegression
     from sklearn.ensemble import RandomForestClassifier
 
     from imblearn.over_sampling import SMOTE
-
-    import pickle
 
     import mlflow
     import mlflow.sklearn
@@ -181,7 +178,7 @@ def train(name, n_features=20, model_choice='lr', estimators_number=30, apply_SM
             X_test = std.transform(X_test) 
             model = LogisticRegression(class_weight='balanced',solver='liblinear', random_state=42)
         
-        elif model_choice == 'rfc':
+        if model_choice == 'rfc':
             if apply_SMOTE:
                 sm = SMOTE()
                 X_train, y_train = sm.fit_resample(X_train, y_train)
@@ -215,4 +212,4 @@ def train(name, n_features=20, model_choice='lr', estimators_number=30, apply_SM
         mlflow.log_metric("AUC", auc)
         mlflow.log_metric("F10 score", f10)
 
-        return model, class_report, confusion_m
+        return model, class_report, confusion_m, X_test, y_test
