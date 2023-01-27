@@ -4,8 +4,8 @@ def grid_search_train(
     solver_list=['lbfgs'],
     C_list=[1],
     n_estimator_list=[30],
-    max_depth_list=[1000],
-    SMOTE=False
+    max_depth_list=[None],
+    SMOTE_data=False
     ):
     
     import warnings
@@ -20,9 +20,12 @@ def grid_search_train(
         accuracy_score,
         roc_auc_score,
         recall_score,
+        precision_score
     )
     from sklearn.linear_model import LogisticRegression
     from sklearn.ensemble import RandomForestClassifier
+
+    from imblearn.over_sampling import SMOTE
 
     import mlflow
     import mlflow.sklearn
@@ -41,7 +44,8 @@ def grid_search_train(
         recall = recall_score(actual, pred)
         f10 = fbeta_score(actual, pred, beta=10)
         auc = roc_auc_score(actual, pred)
-        return accuracy, recall, f10, auc
+        precision = precision_score(actual, pred)
+        return accuracy, recall, f10, auc, precision
 
     warnings.filterwarnings("ignore")
     np.random.seed(42)
@@ -63,7 +67,7 @@ def grid_search_train(
 
     # Split the data into training and test sets. (0.8, 0.2) split.
     X_train, X_test, y_train, y_test = train_test_split(x, y, train_size=0.8, stratify=y)
-    if SMOTE:
+    if SMOTE_data:
         sm = SMOTE()
         X_train, y_train = sm.fit_resample(X_train, y_train)
 
@@ -81,11 +85,13 @@ def grid_search_train(
 
             y_pred = lr.predict(X_test)
 
-            accuracy, recall, f10, auc = eval_metrics(y_test, y_pred)
+            accuracy, recall, f10, auc, precision = eval_metrics(y_test, y_pred)
+
             mlflow.log_metric("Accuracy", accuracy)
             mlflow.log_metric("Recall", recall)
             mlflow.log_metric("AUC", auc)
             mlflow.log_metric("F10 score", f10)
+            mlflow.log_metric("Precision", precision)
         return {'loss': f10, 'status': STATUS_OK}
 
     def objective_rfc(params, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test):
@@ -99,11 +105,12 @@ def grid_search_train(
 
             y_pred = rfc.predict(X_test)
 
-            accuracy, recall, f10, auc = eval_metrics(y_test, y_pred)
+            accuracy, recall, f10, auc, precision = eval_metrics(y_test, y_pred)
             mlflow.log_metric("Accuracy", accuracy)
             mlflow.log_metric("Recall", recall)
             mlflow.log_metric("AUC", auc)
             mlflow.log_metric("F10 score", f10)
+            mlflow.log_metric("Precision", precision)
         return {'loss': f10, 'status': STATUS_OK}
 
     if model_choice=='lr':
@@ -123,7 +130,7 @@ def grid_search_train(
     
     if model_choice=='rfc':
             search_space = {
-                "n_estimators": hp.choice("C", n_estimator_list),
+                "n_estimators": hp.choice("n_estimators", n_estimator_list),
                 "max_depth": hp.choice("max_depth", max_depth_list),
                 "class_weight" : hp.choice("class_weight", ["balanced"])
                 } 

@@ -18,6 +18,7 @@ def cv_train(name, n_features=20, model_choice='lr', estimators_number=30, apply
     )
     from sklearn.linear_model import LogisticRegression
     from sklearn.ensemble import RandomForestClassifier
+    from sklearn.pipeline import make_pipeline
 
     from imblearn.over_sampling import SMOTE
 
@@ -63,22 +64,24 @@ def cv_train(name, n_features=20, model_choice='lr', estimators_number=30, apply
         # Execute LogisticRegression
         if model_choice == 'lr':   
             # Standard scaler trained on train set and applied to both sets
-            std = StandardScaler().fit(X_train)
-            X_train = std.transform(X_train)
-            model = LogisticRegression(class_weight='balanced',solver='liblinear', random_state=42)
+            std = StandardScaler()
+            model = LogisticRegression(class_weight='balanced',solver='lbfgs', random_state=42)
+            pipeline = make_pipeline(std, model)
         
         elif model_choice == 'rfc':
+            model = RandomForestClassifier(n_estimators=estimators_number, class_weight='balanced')
             if apply_SMOTE:
                 sm = SMOTE()
-                X_train, y_train = sm.fit_resample(X_train, y_train)
-            model = RandomForestClassifier(n_estimators=estimators_number, class_weight='balanced')
+                pipeline=make_pipeline(sm, model)
+            else:
+                pipeline = make_pipeline(model)            
 
         f10_score = make_scorer(fbeta_score, beta=10)
 
         skf_5 = StratifiedKFold(5)
-        cv_f10 = cross_val_score(model, X_train, y_train, cv=skf_5, scoring=f10_score)
+        cv_f10 = cross_val_score(pipeline, X_train, y_train, cv=skf_5, scoring=f10_score)
         cv_scores = cross_validate(
-            model, X_train, y_train, cv=skf_5, 
+            pipeline, X_train, y_train, cv=skf_5, 
             scoring=['accuracy','recall', 'roc_auc'],
             return_train_score=True
         )
@@ -107,7 +110,14 @@ def cv_train(name, n_features=20, model_choice='lr', estimators_number=30, apply
 
         return cv_scores
 
-def train(name, n_features=20, model_choice='lr', estimators_number=30, apply_SMOTE=True):
+def train(
+    name, 
+    n_features=20, 
+    model_choice='lr', 
+    estimators_number=30, 
+    apply_SMOTE=True
+    ):
+    
     import warnings
 
     from time import time
@@ -127,6 +137,7 @@ def train(name, n_features=20, model_choice='lr', estimators_number=30, apply_SM
     from sklearn.model_selection import train_test_split
     from sklearn.linear_model import LogisticRegression
     from sklearn.ensemble import RandomForestClassifier
+    from sklearn.pipeline import make_pipeline
 
     from imblearn.over_sampling import SMOTE
 
@@ -173,23 +184,24 @@ def train(name, n_features=20, model_choice='lr', estimators_number=30, apply_SM
         # Execute LogisticRegression
         if model_choice == 'lr':
             # Standard scaler trained on train set and applied to both sets
-            std = StandardScaler().fit(X_train)
-            X_train = std.transform(X_train)
-            X_test = std.transform(X_test) 
-            model = LogisticRegression(class_weight='balanced',solver='liblinear', random_state=42)
+            std = StandardScaler()
+            model = LogisticRegression(class_weight='balanced',solver='lbfgs', random_state=42)
+            pipeline = make_pipeline(std, model)
         
-        if model_choice == 'rfc':
+        elif model_choice == 'rfc':
+            model = RandomForestClassifier(n_estimators=estimators_number, class_weight='balanced')
             if apply_SMOTE:
                 sm = SMOTE()
-                X_train, y_train = sm.fit_resample(X_train, y_train)
-            model = RandomForestClassifier(n_estimators=estimators_number, class_weight='balanced')
+                pipeline=make_pipeline(sm, model)
+            else:
+                pipeline = make_pipeline(model)
 
         t0 = time()
-        model.fit(X_train, y_train)
+        pipeline.fit(X_train, y_train)
         fit_time = time() - t0
 
         # Evaluate Metrics
-        y_pred = model.predict(X_test)
+        y_pred = pipeline.predict(X_test)
         
         class_report, confusion_m, accuracy, recall, f10, auc = eval_metrics(y_test, y_pred)
 
@@ -212,4 +224,4 @@ def train(name, n_features=20, model_choice='lr', estimators_number=30, apply_SM
         mlflow.log_metric("AUC", auc)
         mlflow.log_metric("F10 score", f10)
 
-        return model, class_report, confusion_m, X_test, y_test
+        return pipeline, class_report, confusion_m, X_test, y_test
