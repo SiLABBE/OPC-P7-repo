@@ -22,18 +22,23 @@ def customer_data(data_path):
     customer_list = df["SK_ID_CURR"].drop_duplicates().to_list()
     return df, customer_list
 
-def gauge(score, min=0, max=100):
+def gauge(score):
     fig = go.Figure(go.Indicator(
         mode = "gauge+number",
         value = score,
         domain = {'x': [0, 1], 'y': [0, 1]},
-        title = {'text': "Predicted score"}))
-    st.plotly_chart(fig, theme="streamlit")
+        title = {'text': "Predicted score"},
+        gauge = {'axis': {'range': [0, 1]},
+             'steps' : [
+                 {'range': [0, 0.45], 'color': "darkorange"},
+                 {'range': [0.45, 0.55], 'color': "yellow"}],
+             'threshold' : {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': score}}))
 
+    st.plotly_chart(fig, theme="streamlit")
 
 def main():
     FastAPI_URI = 'http://127.0.0.1:8000/predict'
-    data_path = 'df_train_filtered_50.csv'
+    data_path = 'df_train_model_selected_50cust.csv'
 
     df_customer, customer_list = customer_data(data_path=data_path)
 
@@ -46,14 +51,18 @@ def main():
             filtered_customer = int(selected_customer)
             st.success("Selected customer : %s" %filtered_customer)
             df_filtered = df_customer[df_customer["SK_ID_CURR"]==filtered_customer]
-            st.dataframe(df_filtered)
+            st.dataframe(df_filtered.drop(columns="TARGET"))
 
             X_cust = [i for i in df_filtered.iloc[:,2:].values.tolist()[0]]
             pred = request_prediction(FastAPI_URI, X_cust)
-            st.write(
-            'Predicted score: {}'.format(pred[0]))
-            gauge(pred[0])
-
+            gauge(1-pred[0])
+            if pred[0] <= 0.5:
+                st.write(
+                    'Loan Decision: ACCEPTED')
+            elif pred[0] > 0.5:
+                st.write(
+                    'Loan Decision: REFUSED')
+            
         else :
             st.warning("Unknown customer")
 

@@ -5,12 +5,11 @@ import uvicorn
 from fastapi import FastAPI
 from customer import customer
 import numpy as np
-import pickle
+import joblib
 import pandas as pd
 # 2. Create the app object
 app = FastAPI()
-pickle_in = open("new_model.pkl","rb")
-model = pickle.load(pickle_in)
+pipeline = joblib.load("pipe_lr_model_selected.joblib")
 
 # 2. Index route, opens automatically on http://127.0.0.1:8000
 @app.get('/')
@@ -24,7 +23,7 @@ def predict_Customer(data:customer):
     data = data.dict()
     X_customer=[data['customer_data']]
 
-    pred = model.predict_proba(X_customer)
+    pred = pipeline.predict_proba(X_customer)
 
     return {
         pred[0][0]
