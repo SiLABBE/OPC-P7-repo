@@ -28,6 +28,7 @@ def cv_train(
     from sklearn.pipeline import make_pipeline
 
     from imblearn.over_sampling import SMOTE
+    from imblearn.pipeline import Pipeline
 
     import mlflow
     import mlflow.sklearn
@@ -79,7 +80,7 @@ def cv_train(
             model = RandomForestClassifier(n_estimators=estimators_number, class_weight='balanced')
             if apply_SMOTE:
                 sm = SMOTE()
-                pipeline=make_pipeline(sm, model)
+                pipeline=Pipeline([('sm', sm), ('rfc', model)])
             else:
                 pipeline = make_pipeline(model)            
 
