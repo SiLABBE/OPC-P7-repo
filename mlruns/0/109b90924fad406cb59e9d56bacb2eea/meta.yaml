@@ -1,0 +1,15 @@
+artifact_uri: file:///e:/Documents/3_Formation%20OPC/1_Projets/Projet_7/OPC-P7-repo/mlruns/0/109b90924fad406cb59e9d56bacb2eea/artifacts
+end_time: 1674764634293
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 109b90924fad406cb59e9d56bacb2eea
+run_name: learned-zebra-524
+run_uuid: 109b90924fad406cb59e9d56bacb2eea
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674764553088
+status: 3
+tags: []
+user_id: Formation OPC

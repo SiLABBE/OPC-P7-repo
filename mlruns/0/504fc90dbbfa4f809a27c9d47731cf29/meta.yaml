@@ -1,0 +1,15 @@
+artifact_uri: file:///e:/Documents/3_Formation%20OPC/1_Projets/Projet_7/OPC-P7-repo/mlruns/0/504fc90dbbfa4f809a27c9d47731cf29/artifacts
+end_time: 1674809138893
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 504fc90dbbfa4f809a27c9d47731cf29
+run_name: lr_all_features
+run_uuid: 504fc90dbbfa4f809a27c9d47731cf29
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674809018332
+status: 3
+tags: []
+user_id: Formation OPC
