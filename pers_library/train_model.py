@@ -1,5 +1,12 @@
 # Bank Credit Customer
-def cv_train(name, n_features=20, model_choice='lr', estimators_number=30, apply_SMOTE=True):
+def cv_train(
+    name, 
+    n_features=20, 
+    model_choice='lr', 
+    estimators_number=30, 
+    apply_SMOTE=True
+    ):
+    
     import warnings
 
     import pandas as pd
