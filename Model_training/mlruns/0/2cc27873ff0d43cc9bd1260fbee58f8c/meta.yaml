@@ -1,0 +1,15 @@
+artifact_uri: file:///e:/Documents/3_Formation%20OPC/1_Projets/Projet_7/OPC-P7-repo/mlruns/0/2cc27873ff0d43cc9bd1260fbee58f8c/artifacts
+end_time: 1674765827957
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 2cc27873ff0d43cc9bd1260fbee58f8c
+run_name: luminous-fawn-253
+run_uuid: 2cc27873ff0d43cc9bd1260fbee58f8c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674765807691
+status: 3
+tags: []
+user_id: Formation OPC

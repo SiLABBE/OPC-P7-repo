@@ -1,0 +1,15 @@
+artifact_uri: file:///e:/Documents/3_Formation%20OPC/1_Projets/Projet_7/OPC-P7-repo/mlruns/0/ff2cb69f30d7489694a0eaf717b1ca59/artifacts
+end_time: 1674770942257
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: ff2cb69f30d7489694a0eaf717b1ca59
+run_name: delicate-bug-699
+run_uuid: ff2cb69f30d7489694a0eaf717b1ca59
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674770925086
+status: 3
+tags: []
+user_id: Formation OPC

@@ -1,0 +1,15 @@
+artifact_uri: file:///e:/Documents/3_Formation%20OPC/1_Projets/Projet_7/OPC-P7-repo/mlruns/0/879b85d834894e4888af03ec5a834a22/artifacts
+end_time: 1674760126159
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 879b85d834894e4888af03ec5a834a22
+run_name: learned-lynx-488
+run_uuid: 879b85d834894e4888af03ec5a834a22
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674760115308
+status: 3
+tags: []
+user_id: Formation OPC
