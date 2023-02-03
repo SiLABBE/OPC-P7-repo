@@ -6,10 +6,13 @@ from fastapi import FastAPI
 from customer import customer
 import numpy as np
 import joblib
+import shap
+
 import pandas as pd
 # 2. Create the app object
 app = FastAPI()
 pipeline = joblib.load("pipe_lr_model_selected.joblib")
+shap_explainer = joblib.load(filename='shap_explainer_selected.bz2')
 
 # 2. Index route, opens automatically on http://127.0.0.1:8000
 @app.get('/')
@@ -25,9 +28,11 @@ def predict_Customer(data:customer):
 
     pred = pipeline.predict_proba(X_customer)
 
-    return {
-        pred[0][0]
-    }
+    X_std = pipeline[0].transform(X_customer)
+
+    shap_values = shap_explainer(X_std[0:1])
+
+    return {pred[0][0]}, {tuple(shap_values.values[0])}, {shap_values.base_values[0]}
 
 # 4. Run the API with uvicorn
 #    Will run on http://127.0.0.1:8000
