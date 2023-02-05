@@ -9,4 +9,8 @@ Les 2 principaux axes de ce projet portent donc sur :
 
 Découpage des dossiers : 
 - Model_training contient le Notebook de développement du modèle, ainsi que celui d'étude du Data Drift (+ tableau Evidently).
-- API_Dashboard contient les dossiers API et Dashboard qui intègre les scripts nécessaires au déploiement sur le cloud du modèle et d'un tableau de bord.   
+- API_Dashboard contient les dossiers API et Dashboard qui intègre les scripts nécessaires au déploiement sur le cloud du modèle et d'un tableau de bord.
+
+Liens vers API et Dashboard déployés sur Heroku :
+- API : https://opc-p8-fastapi.herokuapp.com/
+- Dashboard : https://opc-p8-dashboard.herokuapp.com/
