@@ -144,7 +144,7 @@ def global_FI_plot(n_top=20):
     st.pyplot()
 
 def main():
-    FastAPI_URI = 'http://127.0.0.1:8000/predict'
+    FastAPI_URI = 'https://opc-p8-fastapi.herokuapp.com/'
     data_path = 'df_model_selected_1pcust.csv'
 
     df_customer, customer_list = customer_data(data_path=data_path)
